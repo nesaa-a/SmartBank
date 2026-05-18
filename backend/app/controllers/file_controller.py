@@ -1,0 +1,58 @@
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_db
+from app.core.dependencies import get_current_user
+from app.models.auth import User
+from app.schemas.system import FileResponse
+from app.schemas.common import PaginatedResponse
+from app.services.file_service import FileService
+from app.schemas.system import FileCreate
+
+router = APIRouter(prefix="/files", tags=["files"])
+
+@router.get("", response_model=PaginatedResponse[FileResponse])
+async def list_file(
+    skip: int = 0,
+    limit: int = 50,
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    service = FileService(session)
+    items = await service.list(skip=skip, limit=limit)
+    total = await service.count()
+    return PaginatedResponse(items=items, total=total, skip=skip, limit=limit)
+
+@router.get("/{entity_id}", response_model=FileResponse)
+async def get_file(
+    entity_id: UUID,
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    service = FileService(session)
+    entity = await service.get(entity_id)
+    if entity is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    return entity
+
+@router.post("", response_model=FileResponse, status_code=status.HTTP_201_CREATED)
+async def create_file(
+    payload: FileCreate,
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    service = FileService(session)
+    return await service.create(payload, actor_id=current_user.id)
+
+@router.delete("/{entity_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_file(
+    entity_id: UUID,
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    service = FileService(session)
+    deleted = await service.delete(entity_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
