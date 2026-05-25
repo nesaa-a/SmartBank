@@ -18,8 +18,16 @@ class User(Base, AuditMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    user_roles: Mapped[list["UserRole"]] = relationship(back_populates="user", cascade="all, delete-orphan")
-    refresh_tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    user_roles: Mapped[list["UserRole"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="[UserRole.user_id]",
+    )
+    refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="[RefreshToken.user_id]",
+    )
 
 
 class Role(Base, AuditMixin):
@@ -52,7 +60,10 @@ class UserRole(Base, AuditMixin):
         index=True,
     )
 
-    user: Mapped["User"] = relationship(back_populates="user_roles")
+    user: Mapped["User"] = relationship(
+        back_populates="user_roles",
+        foreign_keys="[UserRole.user_id]",
+    )
     role: Mapped["Role"] = relationship(back_populates="user_roles")
 
 
@@ -105,4 +116,7 @@ class RefreshToken(Base, AuditMixin):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     device_info: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
-    user: Mapped["User"] = relationship(back_populates="refresh_tokens")
+    user: Mapped["User"] = relationship(
+        back_populates="refresh_tokens",
+        foreign_keys="[RefreshToken.user_id]",
+    )

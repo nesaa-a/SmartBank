@@ -24,6 +24,7 @@ from app.controllers.setting_controller import router as setting_router
 from app.controllers.underwriting_log_controller import router as underwriting_log_router
 from app.controllers.user_controller import router as user_router
 from app.controllers.ws_controller import router as ws_router
+from app.controllers.prediction_controller import router as prediction_router
 
 api_routers = [
     auth_router,
@@ -50,4 +51,5 @@ api_routers = [
     delinquency_router,
     underwriting_log_router,
     risk_mitigation_rule_router,
+    prediction_router,
 ]
