@@ -10,11 +10,15 @@ export function Layout({ children }: { children: ReactNode }) {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100">
+    <div className="flex h-full min-h-screen flex-col bg-slate-950 bg-grid">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto px-8 py-7">
+          <div className="animate-fade-in mx-auto max-w-5xl">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );

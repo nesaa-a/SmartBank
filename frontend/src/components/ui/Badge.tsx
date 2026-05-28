@@ -1,18 +1,24 @@
 import { clsx } from "clsx";
 
-type BadgeVariant = "green" | "red" | "yellow" | "blue" | "gray";
+type BadgeVariant = "green" | "red" | "yellow" | "blue" | "gray" | "purple";
 
 const styles: Record<BadgeVariant, string> = {
-  green:  "bg-green-100 text-green-800",
-  red:    "bg-red-100 text-red-800",
-  yellow: "bg-yellow-100 text-yellow-800",
-  blue:   "bg-blue-100 text-blue-800",
-  gray:   "bg-gray-100 text-gray-700",
+  green:  "bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shadow-sm shadow-emerald-900/20",
+  red:    "bg-red-500/10    text-red-400    border border-red-500/25    shadow-sm shadow-red-900/20",
+  yellow: "bg-amber-500/10  text-amber-400  border border-amber-500/25  shadow-sm shadow-amber-900/20",
+  blue:   "bg-blue-500/10   text-blue-400   border border-blue-500/25   shadow-sm shadow-blue-900/20",
+  gray:   "bg-slate-700/40  text-slate-400  border border-slate-600/30",
+  purple: "bg-violet-500/10 text-violet-400 border border-violet-500/25 shadow-sm shadow-violet-900/20",
 };
 
 export function Badge({ label, variant = "gray" }: { label: string; variant?: BadgeVariant }) {
   return (
-    <span className={clsx("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium", styles[variant])}>
+    <span
+      className={clsx(
+        "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide",
+        styles[variant]
+      )}
+    >
       {label}
     </span>
   );

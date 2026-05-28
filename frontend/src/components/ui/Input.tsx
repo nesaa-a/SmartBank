@@ -9,24 +9,28 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, hint, className, ...props }, ref) => (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
           {label}
-          {props.required && <span className="ml-1 text-red-500">*</span>}
+          {props.required && <span className="ml-1 text-blue-400">*</span>}
         </label>
       )}
       <input
         ref={ref}
         className={clsx(
-          "w-full rounded-lg border px-3 py-2 text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500",
-          error ? "border-red-400 bg-red-50" : "border-gray-300 bg-white",
+          "w-full rounded-xl border bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-600 transition-all duration-200",
+          "focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/60 focus:bg-slate-900",
+          "hover:border-slate-600",
+          error
+            ? "border-red-500/60 bg-red-950/20 focus:ring-red-500/40 focus:border-red-500/60"
+            : "border-slate-700/60",
           className
         )}
         {...props}
       />
-      {hint && !error && <p className="text-xs text-gray-500">{hint}</p>}
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {hint && !error && <p className="text-xs text-slate-600">{hint}</p>}
+      {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
   )
 );

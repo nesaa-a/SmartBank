@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { User, DollarSign, Briefcase, CreditCard, Landmark, ArrowRight } from "lucide-react";
 import { loanService } from "../services/loanService";
 import type { LoanPredictionResult } from "../types/loan";
 import { Input } from "../components/ui/Input";
@@ -25,7 +26,6 @@ const schema = z.object({
   previous_defaults: z.coerce.number().int().min(0),
 });
 
-
 const EMPLOYMENT_OPTIONS = [
   { value: "employed",      label: "Employed (full-time)" },
   { value: "self_employed", label: "Self-employed" },
@@ -42,13 +42,21 @@ const CONTRACT_OPTIONS = [
 ];
 
 const TERM_OPTIONS = [
-  { value: "12",  label: "12 months (1 year)" },
-  { value: "24",  label: "24 months (2 years)" },
-  { value: "36",  label: "36 months (3 years)" },
-  { value: "48",  label: "48 months (4 years)" },
-  { value: "60",  label: "60 months (5 years)" },
-  { value: "84",  label: "84 months (7 years)" },
-  { value: "120", label: "120 months (10 years)" },
+  { value: "12",  label: "12 months — 1 year" },
+  { value: "24",  label: "24 months — 2 years" },
+  { value: "36",  label: "36 months — 3 years" },
+  { value: "48",  label: "48 months — 4 years" },
+  { value: "60",  label: "60 months — 5 years" },
+  { value: "84",  label: "84 months — 7 years" },
+  { value: "120", label: "120 months — 10 years" },
+];
+
+const sections = [
+  { icon: User,      label: "Personal" },
+  { icon: DollarSign, label: "Financial" },
+  { icon: Briefcase, label: "Employment" },
+  { icon: Landmark,  label: "Loan" },
+  { icon: CreditCard, label: "Credit" },
 ];
 
 export function LoanApplicationPage() {
@@ -70,7 +78,6 @@ export function LoanApplicationPage() {
         ...data,
         has_property: data.has_property === "true",
       });
-      // Store result in sessionStorage and navigate to result page
       sessionStorage.setItem("loan_result", JSON.stringify(result));
       sessionStorage.setItem("loan_application", JSON.stringify(data));
       navigate("/result");
@@ -81,16 +88,32 @@ export function LoanApplicationPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Loan Application</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Fill in the form below. Our AI will assess your application and return an instant decision.
+      {/* Header */}
+      <div className="mb-7">
+        <h1 className="text-2xl font-extrabold text-white">Loan Application</h1>
+        <p className="mt-1.5 text-sm text-slate-500">
+          Fill in the form below — our AI will return an instant decision.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-        {/* Personal Information */}
-        <Card title="Personal Information">
+      {/* Progress steps */}
+      <div className="mb-7 flex items-center gap-1 overflow-x-auto pb-1">
+        {sections.map(({ icon: Icon, label }, i) => (
+          <div key={label} className="flex shrink-0 items-center gap-1">
+            <div className="flex items-center gap-1.5 rounded-full bg-slate-800/60 border border-slate-700/50 px-3 py-1.5">
+              <Icon className="h-3 w-3 text-blue-400" />
+              <span className="text-xs font-medium text-slate-400">{label}</span>
+            </div>
+            {i < sections.length - 1 && (
+              <ArrowRight className="h-3 w-3 shrink-0 text-slate-700" />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        {/* Personal */}
+        <Card title="Personal Information" accent="blue">
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Age"
@@ -113,13 +136,13 @@ export function LoanApplicationPage() {
           </div>
         </Card>
 
-        {/* Financial Information */}
-        <Card title="Financial Information">
+        {/* Financial */}
+        <Card title="Financial Information" accent="blue">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Input
               label="Annual Income (EUR)"
               type="number"
-              placeholder="36000"
+              placeholder="36 000"
               hint="Before tax"
               error={errors.annual_income?.message}
               required
@@ -128,8 +151,8 @@ export function LoanApplicationPage() {
             <Input
               label="Monthly Expenses (EUR)"
               type="number"
-              placeholder="1200"
-              hint="Rent, food, utilities, etc."
+              placeholder="1 200"
+              hint="Rent, food, utilities…"
               error={errors.monthly_expenses?.message}
               required
               {...register("monthly_expenses")}
@@ -137,8 +160,8 @@ export function LoanApplicationPage() {
             <Input
               label="Existing Debt (EUR)"
               type="number"
-              placeholder="5000"
-              hint="Total outstanding loans / credit"
+              placeholder="5 000"
+              hint="Total outstanding debt"
               error={errors.existing_debt?.message}
               required
               {...register("existing_debt")}
@@ -147,7 +170,7 @@ export function LoanApplicationPage() {
         </Card>
 
         {/* Employment */}
-        <Card title="Employment">
+        <Card title="Employment" accent="blue">
           <div className="grid grid-cols-2 gap-4">
             <Select
               label="Employment Status"
@@ -167,12 +190,12 @@ export function LoanApplicationPage() {
         </Card>
 
         {/* Loan Details */}
-        <Card title="Loan Details">
+        <Card title="Loan Details" accent="blue">
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Requested Amount (EUR)"
               type="number"
-              placeholder="15000"
+              placeholder="15 000"
               error={errors.requested_amount?.message}
               required
               {...register("requested_amount")}
@@ -188,7 +211,7 @@ export function LoanApplicationPage() {
         </Card>
 
         {/* Credit Profile */}
-        <Card title="Credit Profile">
+        <Card title="Credit Profile" accent="blue">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Input
               label="Credit Score"
@@ -200,20 +223,20 @@ export function LoanApplicationPage() {
               {...register("credit_score")}
             />
             <Select
-              label="Do you own property?"
+              label="Own Property?"
               options={[
                 { value: "true",  label: "Yes — I own property" },
-                { value: "false", label: "No — I rent / other" },
+                { value: "false", label: "No — renting / other" },
               ]}
               error={errors.has_property?.message}
               required
               {...register("has_property")}
             />
             <Input
-              label="Previous Loan Defaults"
+              label="Previous Defaults"
               type="number"
               placeholder="0"
-              hint="Number of times you defaulted"
+              hint="Number of loan defaults"
               error={errors.previous_defaults?.message}
               required
               {...register("previous_defaults")}
@@ -222,14 +245,15 @@ export function LoanApplicationPage() {
         </Card>
 
         {apiError && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-xl border border-red-500/20 bg-red-500/8 px-4 py-3 text-sm text-red-400">
             {apiError}
           </div>
         )}
 
         <div className="flex gap-3 pb-8">
           <Button type="submit" size="lg" loading={isSubmitting}>
-            {isSubmitting ? "Analysing…" : "Submit Application"}
+            {isSubmitting ? "Analysing your profile…" : "Submit Application"}
+            {!isSubmitting && <ArrowRight className="h-4 w-4" />}
           </Button>
           <Button type="button" variant="secondary" size="lg" onClick={() => navigate("/dashboard")}>
             Cancel

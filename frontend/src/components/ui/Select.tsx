@@ -9,28 +9,32 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, options, className, ...props }, ref) => (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
           {label}
-          {props.required && <span className="ml-1 text-red-500">*</span>}
+          {props.required && <span className="ml-1 text-blue-400">*</span>}
         </label>
       )}
       <select
         ref={ref}
         className={clsx(
-          "w-full rounded-lg border px-3 py-2 text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white",
-          error ? "border-red-400 bg-red-50" : "border-gray-300",
+          "w-full rounded-xl border bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 transition-all duration-200",
+          "focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/60 focus:bg-slate-900",
+          "hover:border-slate-600",
+          error ? "border-red-500/60" : "border-slate-700/60",
           className
         )}
         {...props}
       >
-        <option value="">— Select —</option>
+        <option value="" className="bg-slate-900 text-slate-400">— Select —</option>
         {options.map((o) => (
-          <option key={o.value} value={o.value}>{o.label}</option>
+          <option key={o.value} value={o.value} className="bg-slate-900 text-slate-100">
+            {o.label}
+          </option>
         ))}
       </select>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
   )
 );

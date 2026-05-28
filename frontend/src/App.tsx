@@ -10,6 +10,7 @@ import { ApplicationsHistoryPage } from "./pages/ApplicationsHistoryPage";
 function App() {
   return (
     <BrowserRouter>
+      <div className="h-full">
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -24,6 +25,7 @@ function App() {
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+      </div>
     </BrowserRouter>
   );
 }
