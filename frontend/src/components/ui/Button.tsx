@@ -2,7 +2,7 @@ import { type ButtonHTMLAttributes } from "react";
 import { clsx } from "clsx";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger" | "ghost";
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "solid";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 }
@@ -10,6 +10,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variants = {
   primary:
     "btn-shimmer text-white font-semibold shadow-lg shadow-blue-900/40 hover:shadow-blue-900/60 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+  solid:
+    "bg-blue-600 text-white font-semibold hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed",
   secondary:
     "bg-slate-800/80 text-slate-200 border border-slate-700/60 hover:bg-slate-700/80 hover:border-slate-600 hover:text-white backdrop-blur-sm",
   danger:
